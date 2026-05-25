@@ -24,4 +24,12 @@
       <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.8" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Compile Remove="WiperCheck.Tests\**" />
+        <Content Remove="WiperCheck.Tests\**" />
+        <EmbeddedResource Remove="WiperCheck.Tests\**" />
+        <None Remove="WiperCheck.Tests\**" />
+
+    </ItemGroup>
+
 </Project>

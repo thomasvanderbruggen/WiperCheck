@@ -1,20 +1,60 @@
 using WiperCheck.Models.Forms;
+using WiperCheck.Models.Responses;
 using WiperCheck.Models.Utilities;
 
 namespace WiperCheck.Services.Geocoding;
 
-public class GeocodeService : IGeocodeService
+public class GeocodeService(HttpClient httpClient, IConfiguration config) : IGeocodeService
 {
-    private readonly HttpClient _httpClient;
-
-    public GeocodeService(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
+    private readonly string _apiKey = config["ORS:ApiKey"] ?? throw new InvalidOperationException("ORS API Key is missing from configuration!");
 
     public async Task<GeocodeLocation> GetCoordinates(Address address)
     {
-        var response = await _httpClient.GetAsync($""); 
-        return new GeocodeLocation("Default", 0, 0); 
+        var response = await httpClient.GetAsync(BuildQueryString(address, _apiKey));
+        response.EnsureSuccessStatusCode();
+
+        var apiResult = await response.Content.ReadFromJsonAsync<GeocodeApiResponse>();
+
+        var feature = ValidateApiResult(apiResult);
+        
+        return new GeocodeLocation(feature.Properties.Label, feature.Geometry.Coordinates[1], feature.Geometry.Coordinates[0]);
+
+    }
+    
+    private static Feature ValidateApiResult(GeocodeApiResponse? apiResult)
+    {
+        if (apiResult == null)
+        {
+            throw new InvalidOperationException("ORS API returned an empty or invalid response.!");
+        }
+
+        if (apiResult?.Features == null || apiResult.Features.Length == 0)
+        {
+            throw new InvalidOperationException("No coordinates found for entered city.");
+        }
+
+        if (apiResult.Features.Length > 1)
+        {
+            throw new InvalidOperationException("Multiple coordinates found for entered city, please refine your search.");
+        }
+        
+        var feature = apiResult.Features[0];
+
+        if (feature?.Geometry == null)
+        {
+            throw new InvalidOperationException("ORS API returned an invalid response: missing Geometry.");
+        }
+
+        return feature;
+    }
+    
+    private static string BuildQueryString(Address address, string apiKey)
+    {
+        var street = Uri.EscapeDataString(address.Street ?? string.Empty);
+        var city = Uri.EscapeDataString(address.City ?? string.Empty);
+        var state = Uri.EscapeDataString(address.State ?? string.Empty);
+        var zip = Uri.EscapeDataString(address.ZipCode ?? string.Empty);
+
+        return $"?api_key={apiKey}&address={street}&locality={city}&region={state}&postalcode={zip}";
     }
 }

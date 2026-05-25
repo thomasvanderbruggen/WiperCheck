@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiperCheck", "WiperCheck.csproj", "{CE11A91B-A53B-4E32-B1E5-7A678DD8D030}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WiperCheck.Tests", "WiperCheck.Tests\WiperCheck.Tests.csproj", "{58CB7314-1EB7-4991-A864-F4B387682C21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{CE11A91B-A53B-4E32-B1E5-7A678DD8D030}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE11A91B-A53B-4E32-B1E5-7A678DD8D030}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE11A91B-A53B-4E32-B1E5-7A678DD8D030}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58CB7314-1EB7-4991-A864-F4B387682C21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58CB7314-1EB7-4991-A864-F4B387682C21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58CB7314-1EB7-4991-A864-F4B387682C21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58CB7314-1EB7-4991-A864-F4B387682C21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
