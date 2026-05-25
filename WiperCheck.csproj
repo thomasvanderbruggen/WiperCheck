@@ -1,10 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
-    </PropertyGroup>
+      <UserSecretsId>53df085e-760d-48b0-b83f-d795b800bfcc</UserSecretsId>
+  </PropertyGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Components\Layout\MainLayout.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Config\" />
+      <Folder Include="Services\Routing\" />
+      <Folder Include="Services\TripForecast\" />
+      <Folder Include="Services\Weather\" />
+      <Folder Include="ViewModels\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.8" />
+    </ItemGroup>
 
 </Project>
