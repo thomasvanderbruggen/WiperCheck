@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\WiperCheck.csproj" />
+      <ProjectReference Include="..\WiperCheck\WiperCheck.csproj" />
     </ItemGroup>
 
 </Project>
