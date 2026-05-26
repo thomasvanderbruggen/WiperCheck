@@ -39,7 +39,9 @@ public class RoutingService(HttpClient httpClient, IConfiguration config) : IRou
         var totalDistTravelled = 0.0; 
         var currWayPointDist = 0.0; // Every 3600 seconds, we need to create a waypoint
 
+        // Create waypoints' list and populate with waypoint for starting location
         var waypoints = new List<RouteStep>();
+        waypoints.Add(new RouteStep(0, polylineDecoded[0]));
         
         foreach (var step in apiResult.Routes[0].Segments[0].Steps)
         {
@@ -58,6 +60,8 @@ public class RoutingService(HttpClient httpClient, IConfiguration config) : IRou
                 currWayPointDist = remainder;
             }
         }
+        // Add waypoint for ending location
+        waypoints.Add(new RouteStep(totalDistTravelled, polylineDecoded[polylineDecoded.Count - 1]));
         
         return new RouteResult(
             polylineDecoded, waypoints, apiResult.Routes[0].Summary.Distance, apiResult.Routes[0].Summary.Duration 

@@ -23,4 +23,10 @@
       <ProjectReference Include="..\WiperCheck\WiperCheck.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Fixtures\WhiteHouseToIndependenceHall.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

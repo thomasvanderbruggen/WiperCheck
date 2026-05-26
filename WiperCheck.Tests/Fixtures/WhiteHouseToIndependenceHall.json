@@ -1,0 +1,413 @@
+{
+  "bbox": [
+    -77.041684,
+    38.897691,
+    -75.143353,
+    39.949429
+  ],
+  "routes": [
+    {
+      "summary": {
+        "distance": 226923.9,
+        "duration": 11142.5
+      },
+      "segments": [
+        {
+          "distance": 226923.9,
+          "duration": 11142.5,
+          "steps": [
+            {
+              "distance": 1053.9,
+              "duration": 132.5,
+              "type": 11,
+              "instruction": "Head north on 17th Street Northwest",
+              "name": "17th Street Northwest",
+              "way_points": [
+                0,
+                19
+              ]
+            },
+            {
+              "distance": 531.4,
+              "duration": 83.9,
+              "type": 13,
+              "instruction": "Keep right onto 18th Street Northwest",
+              "name": "18th Street Northwest",
+              "way_points": [
+                19,
+                34
+              ]
+            },
+            {
+              "distance": 553.8,
+              "duration": 67.2,
+              "type": 13,
+              "instruction": "Keep right onto New Hampshire Avenue Northwest",
+              "name": "New Hampshire Avenue Northwest",
+              "way_points": [
+                34,
+                49
+              ]
+            },
+            {
+              "distance": 119.5,
+              "duration": 14.3,
+              "type": 1,
+              "instruction": "Turn right onto T Street Northwest",
+              "name": "T Street Northwest",
+              "way_points": [
+                49,
+                51
+              ]
+            },
+            {
+              "distance": 178.6,
+              "duration": 26.4,
+              "type": 0,
+              "instruction": "Turn left onto 16th Street Northwest",
+              "name": "16th Street Northwest",
+              "way_points": [
+                51,
+                54
+              ]
+            },
+            {
+              "distance": 734.8,
+              "duration": 93.6,
+              "type": 1,
+              "instruction": "Turn right onto New Hampshire Avenue Northwest",
+              "name": "New Hampshire Avenue Northwest",
+              "way_points": [
+                54,
+                78
+              ]
+            },
+            {
+              "distance": 1815.8,
+              "duration": 173,
+              "type": 0,
+              "instruction": "Turn left onto 13th Street Northwest",
+              "name": "13th Street Northwest",
+              "way_points": [
+                78,
+                100
+              ]
+            },
+            {
+              "distance": 3491.4,
+              "duration": 386.2,
+              "type": 6,
+              "instruction": "Continue straight onto 13th Street Northwest",
+              "name": "13th Street Northwest",
+              "way_points": [
+                100,
+                175
+              ]
+            },
+            {
+              "distance": 3218.3,
+              "duration": 228.9,
+              "type": 0,
+              "instruction": "Turn left onto Georgia Avenue Northwest, US 29",
+              "name": "Georgia Avenue Northwest, US 29",
+              "way_points": [
+                175,
+                250
+              ]
+            },
+            {
+              "distance": 2306.2,
+              "duration": 237.1,
+              "type": 1,
+              "instruction": "Turn right onto Colesville Road, US 29",
+              "name": "Colesville Road, US 29",
+              "way_points": [
+                250,
+                294
+              ]
+            },
+            {
+              "distance": 5102.7,
+              "duration": 205.9,
+              "type": 13,
+              "instruction": "Keep right",
+              "name": "-",
+              "way_points": [
+                294,
+                348
+              ]
+            },
+            {
+              "distance": 480.2,
+              "duration": 31.4,
+              "type": 13,
+              "instruction": "Keep right",
+              "name": "-",
+              "way_points": [
+                348,
+                358
+              ]
+            },
+            {
+              "distance": 44775.2,
+              "duration": 2016.6,
+              "type": 12,
+              "instruction": "Keep left",
+              "name": "-",
+              "way_points": [
+                358,
+                692
+              ]
+            },
+            {
+              "distance": 10268.1,
+              "duration": 645.7,
+              "type": 12,
+              "instruction": "Keep left onto I 95",
+              "name": "I 95",
+              "way_points": [
+                692,
+                797
+              ]
+            },
+            {
+              "distance": 13310.2,
+              "duration": 527.5,
+              "type": 12,
+              "instruction": "Keep left onto Express Toll Lanes",
+              "name": "Express Toll Lanes",
+              "way_points": [
+                797,
+                875
+              ]
+            },
+            {
+              "distance": 66120.2,
+              "duration": 2505.4,
+              "type": 13,
+              "instruction": "Keep right",
+              "name": "-",
+              "way_points": [
+                875,
+                1326
+              ]
+            },
+            {
+              "distance": 16019.9,
+              "duration": 629.5,
+              "type": 6,
+              "instruction": "Continue straight onto Delaware Turnpike, I 95",
+              "name": "Delaware Turnpike, I 95",
+              "way_points": [
+                1326,
+                1438
+              ]
+            },
+            {
+              "distance": 2235.3,
+              "duration": 84.7,
+              "type": 12,
+              "instruction": "Keep left onto Wilmington Expressway, I 95",
+              "name": "Wilmington Expressway, I 95",
+              "way_points": [
+                1438,
+                1461
+              ]
+            },
+            {
+              "distance": 24699.9,
+              "duration": 1145.9,
+              "type": 13,
+              "instruction": "Keep right onto Vietnam Veterans Memorial Highway, I 495",
+              "name": "Vietnam Veterans Memorial Highway, I 495",
+              "way_points": [
+                1461,
+                1648
+              ]
+            },
+            {
+              "distance": 26260.8,
+              "duration": 1533.4,
+              "type": 12,
+              "instruction": "Keep left onto Delaware Expressway, I 95",
+              "name": "Delaware Expressway, I 95",
+              "way_points": [
+                1648,
+                1888
+              ]
+            },
+            {
+              "distance": 431.7,
+              "duration": 39.6,
+              "type": 13,
+              "instruction": "Keep right",
+              "name": "-",
+              "way_points": [
+                1888,
+                1897
+              ]
+            },
+            {
+              "distance": 78.8,
+              "duration": 9.5,
+              "type": 12,
+              "instruction": "Keep left",
+              "name": "-",
+              "way_points": [
+                1897,
+                1901
+              ]
+            },
+            {
+              "distance": 251.9,
+              "duration": 30.2,
+              "type": 0,
+              "instruction": "Turn left onto South Christopher Columbus Boulevard",
+              "name": "South Christopher Columbus Boulevard",
+              "way_points": [
+                1901,
+                1905
+              ]
+            },
+            {
+              "distance": 784.3,
+              "duration": 94.4,
+              "type": 0,
+              "instruction": "Turn left onto Washington Avenue",
+              "name": "Washington Avenue",
+              "way_points": [
+                1905,
+                1919
+              ]
+            },
+            {
+              "distance": 617,
+              "duration": 44.4,
+              "type": 1,
+              "instruction": "Turn right onto South 5th Street",
+              "name": "South 5th Street",
+              "way_points": [
+                1919,
+                1930
+              ]
+            },
+            {
+              "distance": 6.9,
+              "duration": 1.7,
+              "type": 0,
+              "instruction": "Turn left onto Monroe Street",
+              "name": "Monroe Street",
+              "way_points": [
+                1930,
+                1931
+              ]
+            },
+            {
+              "distance": 21.8,
+              "duration": 5.2,
+              "type": 3,
+              "instruction": "Turn sharp right onto East Passyunk Avenue",
+              "name": "East Passyunk Avenue",
+              "way_points": [
+                1931,
+                1932
+              ]
+            },
+            {
+              "distance": 807.2,
+              "duration": 71.7,
+              "type": 12,
+              "instruction": "Keep left onto South 5th Street",
+              "name": "South 5th Street",
+              "way_points": [
+                1932,
+                1952
+              ]
+            },
+            {
+              "distance": 272.2,
+              "duration": 28,
+              "type": 0,
+              "instruction": "Turn left onto Walnut Street",
+              "name": "Walnut Street",
+              "way_points": [
+                1952,
+                1954
+              ]
+            },
+            {
+              "distance": 171,
+              "duration": 22.5,
+              "type": 1,
+              "instruction": "Turn right onto South 7th Street",
+              "name": "South 7th Street",
+              "way_points": [
+                1954,
+                1959
+              ]
+            },
+            {
+              "distance": 204.7,
+              "duration": 26,
+              "type": 1,
+              "instruction": "Turn right onto Chestnut Street",
+              "name": "Chestnut Street",
+              "way_points": [
+                1959,
+                1963
+              ]
+            },
+            {
+              "distance": 0,
+              "duration": 0,
+              "type": 10,
+              "instruction": "Arrive at Chestnut Street, on the right",
+              "name": "-",
+              "way_points": [
+                1963,
+                1963
+              ]
+            }
+          ]
+        }
+      ],
+      "bbox": [
+        -77.041684,
+        38.897691,
+        -75.143353,
+        39.949429
+      ],
+      "geometry": "qellFrweuMaC?_B?mC?{@?mAAmA?}@?E?kA?iC?aAKc@?y@?wDhBKD_EpBqDdBEB{E|B}A?sA?kC?q@?}@?U?m@AkA?oAAq@?Q?g@?[?qA?sA?QQm@i@KKmBgBWUYYGEqBkBcA}@qAmA}@w@[[y@u@US_CuB?qC?aCmC?mCAe@?Mi@]_@aB{A[[KGeA_ASOMMa@_@g@i@g@k@KM{@}@IMEQYwB_@kCE]WeBSgBEc@Ky@YiCUsBOBe@?{@@sA?[?}C@kG?cE?mA?yB?eE?gB?kA?gE?mE?mE?{B?kB?cB@yL@wIAmBAkC?K?oA?w@AoA?sE?wC?{@?kA?_@?]?kA?oD?[?gE?g@?k@?uC?{A?wB?]@iAAmB?wA?}B?mA?M?u@?gA?mA?qA?W?iB?wEAmE@mF?qEAuE?sE?kB?iB@yA?E?qGA}@?{@@c@?M?yAAeC?gB?aC?u@@]F[Ls@`@SHUB[Aa@ISM_@[WSc@]c@a@mCyBs@e@SMIEe@Ww@e@g@]QSYs@S_@iAGOAm@CG?u@CSAIAc@AWAc@CK?cBIi@AsH]sAGqAGGAoAGy@Ge@CqAIsLk@eH_@mCM}@?yB@_B@yABQ?{ABU?m@@S@k@@a@?k@@_A?Q@Y?M?u@@uA@iA@e@?gBDg@?q@@a@@u@Bg@KgD@{B?c@@eC?W?sC?sB?aIGY?uAA{A?_A?uAAuABaBBsAB}BHk@Bm@JWF{Ap@o@h@o@p@YZuA`Bc@_@wCeB{BuAuBqAuA{@aA_@sA]_Cq@kD}@oDuAcAc@qAo@KEu@]qBaAaAg@s@]sAq@y@k@aBkAs@g@sCmC{AaBEGcAoAgAeBS]a@u@Io@Qc@kDkGg@m@_@[[Qa@S_Du@sA]uFuAiCm@i@GmAIg@?m@@wBHg@QOKOQQY]gAc@cAm@y@mAsAi@cAOa@WmAaAyHS{DA}A@sADuAJ_BTgBXcBjBwJj@}DNwAHeBDiBA{ACcAEmAKmASgBgBmKyGs`@wAoI{Gka@e@kDe@mEYaESeFCsF?uAF_DN}DNyB|AsOXiChAyKTsCX_GFwFCyMG{LSuK[qIa@mH_@mF[oGGwC?q@D_AJ}@\\qBTw@Xs@~@aBhA_Br@kBPs@Jq@Fu@@q@?o@MeB[}ASo@k@iA]c@]_@c@a@e@YqAg@_Cq@sAYsBc@oEo@uBWiH_AgEa@sAMmEi@yDk@iB_@wCy@gAa@mBeA}AgA{AmAq@m@eBmBy@eAs@eA{@}AoDsHiBmDaBoC_AuA}@qAiB}BeAmAuCuC_DmCwB_BqAy@ef@kYyMuHyEaC{BcAuF{Bw`@qNqCcAoAk@yC_B}@o@gA{@uBsBoA}A_B}Bw@qAg@eAqA{CeA}CkP{m@eA_Dg@mAg@kAsAeCu@oAaAsAeAuAcAeAeAcAeA}@kAy@wo@q`@iFeDkNiJqGqE_j@m`@{LuIkD}BkDmBiB}@eDwA{Bw@}DiAmBa@}l@wL_D_AmAe@eAe@uC_B}BcBsBmBaCoC{@mAu@kAcAgBcHkNaCcEeAcBmDaFeE_F_LgLiDyDcCcDgCsDaEgG_FiHqAaBgAsAoBuBaDwCmB{A_BgAwCkB{@e@kCoAq\\}NeB{@oBkAgBiAyBaBoBaBeBgBm@o@mAkAaAkAmBiCwCuEwAkCgA{BcA_Cm@_BqAqDmBoGe@}Ak@eBi@yAyAeDq@sAoBeDyBwCkCwCyAsAuAeA}AgAca@eW}PwKyBwAwGaEwKcHaBiAyAoAqCoCqA_BoAgBiAgBaAiBq@wAi@qA{@{Bg@cBaAoDYmAk@{CmEeWk@cDg@qCq@_Eu@yDmBcIe@{AkAoDmA}Cu@cBqAmCmFuK{Tmd@o@oAqn@kpAa^at@kO}Z{MkXeAgB{@sA{BuCoCqCsAiAiJ_H_BoAsD_DkFgFgJsJy@w@gBmBwLaM{CaDsCcDeEmFu@eAeBcCqEeH_D{FmAcC{@mBgFiMqkAsxCaJgU}@uBsBeEiAuBcCaEwNeUuEkHmOgV}@sAeAsAw@_AiBeBwAqA{AgAwA_AuS{L{P}J_BcA{DwCgE{D}DyEoA_B{BgD{BcEcBoDcAcC}@eCo@oBe@iBOw@Mu@UgBMsBEu@QkJK{BKeBSsBi@wDWqAu@oDc@yAk@gB{@}BaAsBqAeC_E{GmDeGaJoOoBuDwAsCw@aBuCiHk@wAaGmOaAaCy@kB_@s@{@sAmA{AsAsA{@q@yAaAoAo@oBs@oW_IqAa@yAg@kAc@eGiCiFiCsEiCqEiCuByAgBeB}AqBsA_C}@qBqHoTwOid@[_AkF}OmCiIm@uBe@cC]wCOeCCgCFqDf@iMj@yMx@iQl@aPV_F`@mHlAiOd@gFl@aGnAcLj@kEbBaLtAgIh@{DRqBV}CPmDLsDBgB?}BEcJ@aDBkBJkDl@oHPqDJ{EAsBCoBaA}j@A_C@qBNeFvC{`@^aF\\eDj@sEn@mEn@uDxA_I~AyHzA}Gx@kC`AkC~A_EpGaRlAaHl@eFp@sIJ{EIqGs@eK[sCg@_DeOke@yDwIk@iA{@oAs@mA_HoJ}B_Dg@cAgBeCo@aAaNoQuDoFaDgEkCiDiBmBaA{@_Ak@w@e@eAa@kA_@_B_@}A[_KeAwAQqCg@iD{@_C}@cEsBi@_@aAs@kAoAk@{@gAoB[u@]cA_@sASaAQgAOcAUqCOyDGuBEeHBqCHmDBkAPaGL_D@yCGgCI}@QiASaA]iA]}@Q]Sa@mAeBqAmAo@_@u@]u@YgA[sM}B_PoC{Cg@}E{@uCe@iLkBeDa@kBQkLm@mCG{DCsGDsDLgBHgCPqAHuHv@uEp@iBZyBb@cPzDsLlC_Bp@gCp@kBZkAHmA@cACkAIw@MyA]sAg@qAq@}AgAe@a@wV_WaKuJu@q@iMoMcPkP}K_LyCuCiDuCyDqC}DcCoDmBwBcAiS_JkAs@{@i@iA}@w@q@eAgAsA_BoAgBiAsBmAkCeIoSwKoXcN_^_CaG[u@IU[w@}@{BiJ{U_ImR}EyL_P_a@aBwDiBuDqAaCaFyI}BcEkDcHoBmEsDaJgg@goAaAyB_CkEq@iAw@oAuBwCmEwFaD{DgD{DcHyH{LsMmG_HQQcFoFmFwF_b@oc@yHkIsG{GkD_DcUmRoFmE{DsD{@aAaBgDaDiEu}@qsAkAgB}@iAkCuCkAeAoCwBwPcK_DeBcBy@oCoBy@q@yAwAs@_AwCiEe@{@y@iB{@aCsPgj@cEcLqB}FoAwC{CkG{C}FeB_D_BkC_GqIsUo^{KsPwH{Le@w@e@q@aDeF}FyIeEyGiB_DaAkByAgDeA}C]kA_@cB_@gB[gBe@kD]wDMiCOuFDmRRaa@Bg`@FkZC_BUwFc@qE[gCWqB]kB]}A}@kD{D{O}Q{o@{BuHmB_Hu@{BiDcJ{FwMuA_DqAyCqGyMeAcCwEuIqCgGcCyFiEyKgDgJeIcV}BiHo@eC]cAcBeFeC_JGSm[khAgLca@_CaHmEoLeAeCaAyBaAkBaAcBkAoBmAeBuAmBgBwBqOcQgAsAkBiCwAaCc@{@_@u@mAqCsQmf@e@qAeCkHs@oBw@eBm@mBqAqEg@sBaAyEgGc^gAmFmAaF_BkF{AiEo@cB}BgF_A_CcA}AiCeEoAkB{DeFgBqB}A_B_GuF_AcAcAuAq@cAk@cA{Uof@cAmBw@qA}@oAgAsAkCeCeH}EiA{@w@y@s@y@{A{Bg@aAa@}@c@mAk@iBMG}DwPiEyQk@oBsAeEeBmEcA{BuB}DwBiDmCkDoA{AggA}kA{@aAk@e@s^u`@s@_Au@gAq@iAm@gAiAiCi@}AcYm}@GWwAaD}@sBIQsAmCiAoBoAqBqAmBmA}AmDaE}ByBaBuAyEkDoC_Bu\\gQgBaAiDyBmDoCqAkAwCyCmCcDiAyA{NeRKMuCuDeU_ZgE{FuFqI{h@}y@wAuBcAsAqA{AwA{AwAwAsKoJyKuIqMsKmAgAeCgC_CuCgAaBqBgDgAuBcA{B{A}Dc@wA{AqFg@}Bg@sC]_CWuBSwB_@{FImBKcJc@_l@IgEGqA[uCc@cCs@wC_@kAm@mAuCyIePke@{Tio@u@_Ce@aB_@kBU{AKuAQiDCuA?wA@uJN}u@CqDMiCEiAOoBO{Aa@cDs@}Dy@yDqAwEw@oCUW}AkDu@yA}BwDKQq@aAw@iAoFqHWg@mEgGkIqMsCwD{@wAy@}Ak@oAk@wAeAeD_AeE]oBQeAuAyJ}Oq`AeAcGiA_FeAwDu@_CaBmEmOi_@aBmEgBaGk@}BeAaF{@mFs@yFkLofAa@iDq@}FGkAaFgf@u@kG[oB[iB_@}AcAwDe@wAo@eBq@}Aq@wAq@sAeBwCcKsOQOeVc`@yO_We@u@sGcKk@cAiBgDsAwCwAkDmAmDwA{EgAoE_A_Fq@uEWuBg@mF[oFqBwe@s@cPW_F]mESmBq@_Fs@cEaAoEiAoEuBcHU_@]u@oAyCsd@ieAqEiKkAoCoKmVgAmCiC_H_AoCgFwO}BgH_BoFoAeFoAeGa@}B}Gaa@_@cCQ{AWkDMkDAoDJmDTmDLmA\\iCTqAt@_DnQwr@^}AVqAf@eD\\cDPuDFsDAyAIcDSiDsOi{A_@uEUoEQiH?{GBkBLkETgEZiEPcBRiBt@eFx@gEfBoIx@iEZyBv@_H`@{FLgCH_CH}F@aCEiEOiFMcCc@uFUcCY}B]}BuScpA_@cCk@gFc@yFUcFGwBAqBAkFBwBLcFHmBN_Cd@sFTwBv@qFh@sC~Iyc@|@kFXsBj@oF`@eGRwFNaKBoB|@u{@LuFHuCLgC^kGFcALeCh@cG|BoU\\kDlAgKl@aFZ_FRyBj@uFtBoTj@iHHeBLeEDyD?mBAsBIiDKsC[sEc@oEi@}Du@cE{F_Xu@qCyCmMkGcZ{AgHuBwLw@gE_AgEo@kC}BkIq@_Dc@eCe@gDg@oGAM@YSyFE_EAe`@E_q@EuBSmEKsBS{Be@oEyCiVOwA_BuMY{BwHmo@_Ei]wH}n@}Di\\_@mCc@mCc@yBc@uB_AuDcAmDwAgE}A}DiCqFkDiGeAgBeBwCAOm@eBmA_DsDiK_CmGeA}BwAkCy@sAy@oAoBcCgAmAmCgC{EkEqB_Bc@SsCmD_CkDy@qAqB}Dy@mBoAaD_EuK_AiC}BiFoCsGk@kAoBaEaBmBaB_CcH{IoEaGg@u@MYuCkDsEqFuBwCs@iAmB}CgBaDqD_HkGyOQQw@gBcCcHgAoDo@mCEk@s@_CaB_Gq@uCw@wDqCoO}AaIwBkJsAmFyB_Jm@sBiDeROeAyB{Is@}Cy]kaB{@oESeAmAkG_A}CeMok@wAaIOUWeA_@iBkAaGaBkJeFg_@sAiMc@{Eq@iI}AgUUkC_@kCa@eBk@eBs@eBk@cA{@kAgAoAaAu@sAw@oAk@i@QwBe@aBSeJi@aDWaCc@qA]_C}@qBiAmBwAkBgBaAiAwAuBy@wAkAmCk@_B{@}C_@gBYgBuAgMWcCoHkr@QqBg@sGa@sIO}GEeFCmS?oBAaDAaE?_DIsn@IiDKqBMqB[eDWqB[kBm@aDgAkEwAkEiAsCwA{Cy@uAsAyBi@y@mDyEiD}Emj@aw@eIiLyB}C_BqBqBcCwB}BkDgDyKqJaDoCi@e@cMsKqf@mb@eA}@gFyEiCsCaBmCk@eAcAeCw@oCuDeNo@wBaAiCqAmCcBqCaBaC_AkAoCeDkBiC}AcCu@kBoAaEc@eByBqJQm@qAwF}AcFeB_EuAgCqBmCkCmCuCwBmCyAc[_N_n@kXoEyBqFmDsB}AgA}@o`@k]{HgHiM}LsKqKaDoDqBeCwBwC{CyEgDgGsNiXcS_`@kBkDaCyDwBkC}DoDgA{@aAs@oAu@gAk@oAi@aBi@sDy@wASqAIeE?aBLmEr@kBj@}Bz@wBbAcHfEiDnBaCpA_Cx@uB^cBPsCFsBK{AOs@Kw@QqAc@yBaA{@g@uA_AsAaAkB_BqAeAuB}B_E}EqA}A{DwEs@aAk@{@}@_Bw@aBm@sAi@uAg@eBeDeNsAiFqA}EeBkF}@cCiBuDwDsGuE}HaKaQwE_IgHsLKSgAoBwDyGuC}EoAcCaAwB_AyB}AoE{A{ESw@s@}CsJod@oEkSyBmJwDgPMg@mFqU{CuMw@gD_C}IyBoHwF{OgCeHiB{FuAcFs@yCoA}F]iBgCuMcCqK[sAKc@wDePiAqEgAoD_CuHeC}I[eAsBsHkBkGcI}Ww[_fA}BwGyCyFoB}CcNsOw@cAaCsDMQKOy@mAgAoByHiMqAcCSi@m@aB[mAIc@Ms@WwBO_CAiA@iBHcBTwBVwB`A_IZmBNsBDaCE_BKmBWmBUoAg@{BwHiZy@cDkEeQ_@sB[gCQ_CEuAAsADmDN}BLkA^eCr@}CdFeRx@oDh@cD\\cDNqBHcBBoB@qBCqBGuBKmBk@_F{@_F}VkjA_Oeq@_@iB]kBc@eDQoBOsBImBEoBAoB@oBNaFnAa\\HiD@kDCqBEoBMyCu@gNKmBIiDCwGN}LPgR@iBCkDIsDKeCQ{Ca@wE]cDWoBeAkGo@aDc@gBw@yC}@yCyAcEo@_BmAkCsAiCyAyB}@mAaAkAsDgDoB{AmAy@uBkA}Z{OmCgBgCwBgBiBaBqBeA{AkB_DoAeCgAmCaAsC{@{Ca@iB]gBg@eDg@oEYqEI_CCwA?gDHsEVsEJqAVyBh@sDr@mDv@}C|@sCfAuCb@cAbAsBdQm\\tAkChBkDbA}Bl@aBbAsDh@qCZgCPkCF{B@wAA_BIgCQmCYaCYaB_@cBc@yAkA}Cc@_Ak@eAwDgGmF}HcJkNmJqNmDgFmFiIg@{@oAeCk@oAmAaDw@eCy@_Dg@gCo@cEWuB{@yIcAuJeB_Q}BmUSkCGuAEoB@qBFuA|@yNJoCDwFCoCEiAUwE}IcxAYmCSoAQu@e@_BWo@s@{Am@_A_@g@cAgAcAw@mAs@gAc@aAWkDi@wYwD{MgA_BSuCg@uFcAwE_AwDo@_AKgAGiACgBHkPvAqA?yD]}Y{DkC]oFy@eD_A{A_@{GaA[Im@[KGs@{@OWOc@Kg@Au@@_@Ju@oIkASEgASQECr@QnBKzACZYvDi@zHSlDYxEU~CMbBGv@ANg@rCi@nCaDe@wAQiAO}@Me@G_BWcBUiC]_AM}B[qC_@ALa@YmAOc@GwAQuAQgBUeBWkAOQCqAQgBWiAOGAUCkAQcAKCAuCa@qAQ]EoC]c@zHe@xHcAMcAOMCu@KcBUXwEJaBLqBDm@",
+      "way_points": [
+        0,
+        1963
+      ]
+    }
+  ],
+  "metadata": {
+    "attribution": "openrouteservice.org | OpenStreetMap contributors",
+    "service": "routing",
+    "timestamp": 1779765327372,
+    "query": {
+      "coordinates": [
+        [
+          -77.036567,
+          38.897682
+        ],
+        [
+          -75.150013,
+          39.948902
+        ]
+      ],
+      "profile": "driving-car",
+      "profileName": "driving-car",
+      "format": "json"
+    },
+    "engine": {
+      "version": "9.9.0",
+      "build_date": "2026-04-20T10:23:42Z",
+      "graph_date": "2026-05-15T15:29:58Z",
+      "osm_date": "2026-04-26T23:59:57Z"
+    }
+  }
+}

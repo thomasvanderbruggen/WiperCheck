@@ -24,6 +24,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <InternalIsVisibleTo Include="WiperCheck.Tests" />
+        <InternalsVisibleTo Include="WiperCheck.Tests" />
     </ItemGroup>
 </Project>
