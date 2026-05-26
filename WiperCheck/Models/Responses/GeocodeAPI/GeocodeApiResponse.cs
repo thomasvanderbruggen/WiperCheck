@@ -69,7 +69,7 @@ public class Properties
     public string Postalcode { get; set; }
 
     [JsonPropertyName("confidence")]
-    public int Confidence { get; set; }
+    public double Confidence { get; set; }
 
     [JsonPropertyName("match_type")]
     public string MatchType { get; set; }
@@ -156,7 +156,7 @@ public class Query
     public ParsedText ParsedText { get; set; }
 
     [JsonPropertyName("size")]
-    public long Size { get; set; }
+    public double Size { get; set; }
 
     [JsonPropertyName("private")]
     public bool Private { get; set; }
@@ -165,7 +165,7 @@ public class Query
     public Lang Lang { get; set; }
 
     [JsonPropertyName("querySize")]
-    public long QuerySize { get; set; }
+    public double QuerySize { get; set; }
 }
 
 public class Lang

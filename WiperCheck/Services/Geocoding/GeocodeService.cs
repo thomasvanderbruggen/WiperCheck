@@ -33,10 +33,10 @@ public class GeocodeService(HttpClient httpClient, IConfiguration config) : IGeo
             throw new InvalidOperationException("No coordinates found for entered city.");
         }
 
-        if (apiResult.Features.Length > 1)
-        {
-            throw new InvalidOperationException("Multiple coordinates found for entered city, please refine your search.");
-        }
+        // if (apiResult.Features.Length > 1)
+        // {
+        //     throw new InvalidOperationException("Multiple coordinates found for entered city, please refine your search.");
+        // }
         
         var feature = apiResult.Features[0];
 
@@ -55,6 +55,7 @@ public class GeocodeService(HttpClient httpClient, IConfiguration config) : IGeo
         var state = Uri.EscapeDataString(address.State ?? string.Empty);
         var zip = Uri.EscapeDataString(address.ZipCode ?? string.Empty);
 
-        return $"?api_key={apiKey}&address={street}&locality={city}&region={state}&postalcode={zip}";
+        var combined = $"?api_key={apiKey}&address={street}&locality={city}&region={state}&postalcode={zip}";
+        return combined;
     }
 }

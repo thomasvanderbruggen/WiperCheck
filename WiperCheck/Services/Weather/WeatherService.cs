@@ -10,7 +10,6 @@ namespace WiperCheck.Services.Weather;
 
 public class WeatherService(HttpClient httpClient, IConfiguration config, IDateTimeProvider dateTimeProvider) : IWeatherService
 {
-    private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
     public async Task<WeatherResult> GetWeather(GeocodeLocation location, System.DateTime arrivalTime)
     {
         var response = await httpClient.GetAsync(BuildQueryString(location));
@@ -28,7 +27,7 @@ public class WeatherService(HttpClient httpClient, IConfiguration config, IDateT
 
     internal WeatherResult MapToWeatherResult(GeocodeLocation location, WeatherApiResponse apiResult, System.DateTime arrivalTime)
     {
-        var hourIndex = (arrivalTime - _dateTimeProvider.Today).TotalHours;
+        var hourIndex = (arrivalTime - dateTimeProvider.Today).TotalHours;
         var hourly = apiResult.Hourly;
         var weatherCode = GetValueAtRoundedIndex(hourly.WeatherCode, hourIndex);
 

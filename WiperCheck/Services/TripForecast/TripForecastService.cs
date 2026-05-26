@@ -39,15 +39,17 @@ public class TripForecastService
         
         var weatherResults = await Task.WhenAll(weatherTasks);
         
-        return new TripForecastResult
+        var tfr = new TripForecastResult
         {
             TotalDistanceMiles = route.TotalDistanceMiles, TotalDurationSeconds = route.TotalTimeSeconds, 
             Waypoints = route.Steps.Select((waypoint, index) => new WaypointForecast
-            {
-                WaypointIndex = index,
-                WeatherResult = weatherResults[index]
-            })
-            .ToList()
+                {
+                    WaypointIndex = index,
+                    WeatherResult = weatherResults[index]
+                })
+                .ToList()
         };
+
+        return tfr;
     }
 }
