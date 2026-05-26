@@ -1,6 +1,9 @@
 using WiperCheck.Components;
+using WiperCheck.Services.DateTime;
 using WiperCheck.Services.Geocoding;
 using WiperCheck.Services.Routing;
+using WiperCheck.Services.TripForecast;
+using WiperCheck.Services.Weather;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,13 @@ builder.Services.AddHttpClient<RoutingService>(client =>
     client.BaseAddress = new Uri("https://api.openrouteservice.org/");
     client.DefaultRequestHeaders.Add("Authorization", builder.Configuration["ORS:ApiKey"]);
 });
+builder.Services.AddHttpClient<WeatherService>(client =>
+{
+    client.BaseAddress = new Uri("https://api.open-meteo.com/v1/forecast");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+builder.Services.AddScoped<TripForecastService>();
+builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 var app = builder.Build();
 

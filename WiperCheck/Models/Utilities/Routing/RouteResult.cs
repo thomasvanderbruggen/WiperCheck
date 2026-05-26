@@ -9,5 +9,5 @@ public class RouteResult(
     public List<GeocodeLocation> Polyline { get; set; } = polyline;
     public List<RouteStep> Steps { get; set; } = steps;
     public double TotalDistanceMiles { get; set; } = totalDistanceMiles;
-    public double TotalTimeMinutes { get; set; } = totalTimeMinutes;
+    public double TotalTimeSeconds { get; set; } = totalTimeMinutes;
 }

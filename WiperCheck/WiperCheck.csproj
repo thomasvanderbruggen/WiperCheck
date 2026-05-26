@@ -14,9 +14,6 @@
 
     <ItemGroup>
       <Folder Include="Config\" />
-      <Folder Include="Services\TripForecast\" />
-      <Folder Include="Services\Weather\" />
-      <Folder Include="ViewModels\" />
     </ItemGroup>
 
     <ItemGroup>
