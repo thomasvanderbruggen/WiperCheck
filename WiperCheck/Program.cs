@@ -1,5 +1,6 @@
 using WiperCheck.Components;
 using WiperCheck.Services.Geocoding;
+using WiperCheck.Services.Routing;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,12 @@ builder.Services.AddHttpClient<IGeocodeService, GeocodeService>(client =>
 {
     client.BaseAddress = new Uri("https://api.openrouteservice.org/geocode/search/structured");
     client.DefaultRequestHeaders.Add("Accept", "application/json");
-}); 
+});
+builder.Services.AddHttpClient<RoutingService>(client =>
+{
+    client.BaseAddress = new Uri("https://api.openrouteservice.org/");
+    client.DefaultRequestHeaders.Add("Authorization", builder.Configuration["ORS:ApiKey"]);
+});
 
 var app = builder.Build();
 

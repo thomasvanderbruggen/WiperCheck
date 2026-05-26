@@ -1,5 +1,5 @@
 using WiperCheck.Models.Forms;
-using WiperCheck.Models.Responses;
+using WiperCheck.Models.Responses.GeocodeAPI;
 using WiperCheck.Models.Utilities;
 
 namespace WiperCheck.Services.Geocoding;

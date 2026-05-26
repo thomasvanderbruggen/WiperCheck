@@ -14,7 +14,6 @@
 
     <ItemGroup>
       <Folder Include="Config\" />
-      <Folder Include="Services\Routing\" />
       <Folder Include="Services\TripForecast\" />
       <Folder Include="Services\Weather\" />
       <Folder Include="ViewModels\" />
@@ -24,4 +23,7 @@
       <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.8" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalIsVisibleTo Include="WiperCheck.Tests" />
+    </ItemGroup>
 </Project>

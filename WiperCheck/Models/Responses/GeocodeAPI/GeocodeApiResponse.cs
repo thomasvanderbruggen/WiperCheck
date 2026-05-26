@@ -1,4 +1,4 @@
-namespace WiperCheck.Models.Responses;
+namespace WiperCheck.Models.Responses.GeocodeAPI;
 
 using System;
 using System.Text.Json.Serialization;
