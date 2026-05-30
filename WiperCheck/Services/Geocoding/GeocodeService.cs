@@ -1,5 +1,5 @@
 using WiperCheck.Models.Forms;
-using WiperCheck.Models.Responses.GeocodeAPI;
+using Forward = WiperCheck.Models.Responses.GeocodeAPI;
 using WiperCheck.Models.Utilities;
 
 namespace WiperCheck.Services.Geocoding;
@@ -13,15 +13,33 @@ public class GeocodeService(HttpClient httpClient, IConfiguration config) : IGeo
         var response = await httpClient.GetAsync(BuildQueryString(address, _apiKey));
         response.EnsureSuccessStatusCode();
 
-        var apiResult = await response.Content.ReadFromJsonAsync<GeocodeApiResponse>();
+        var apiResult = await response.Content.ReadFromJsonAsync<Forward.GeocodeApiResponse>();
 
         var feature = ValidateApiResult(apiResult);
         
         return new GeocodeLocation(feature.Properties.Label, feature.Geometry.Coordinates[1], feature.Geometry.Coordinates[0]);
 
     }
+
+    public async Task<Address> GetAddress(GeocodeLocation location)
+    {
+        var response = await httpClient.GetAsync(BuildQueryString(location, _apiKey));
+        response.EnsureSuccessStatusCode();
+        
+        var apiResult = await response.Content.ReadFromJsonAsync<Forward.GeocodeApiResponse>();
+
+        var feature = ValidateApiResult(apiResult);
+        var address = new Address(); 
+        
+        address.Street = feature.Properties.Street;
+        address.City = feature.Properties.Locality ?? feature.Properties.County; 
+        address.State = feature.Properties.Region; 
+        
+        return address;
+
+    }
     
-    private static Feature ValidateApiResult(GeocodeApiResponse? apiResult)
+    private static Forward.Feature ValidateApiResult(Forward.GeocodeApiResponse? apiResult)
     {
         if (apiResult == null)
         {
@@ -47,7 +65,8 @@ public class GeocodeService(HttpClient httpClient, IConfiguration config) : IGeo
 
         return feature;
     }
-    
+
+
     private static string BuildQueryString(Address address, string apiKey)
     {
         var street = Uri.EscapeDataString(address.Street ?? string.Empty);
@@ -55,7 +74,12 @@ public class GeocodeService(HttpClient httpClient, IConfiguration config) : IGeo
         var state = Uri.EscapeDataString(address.State ?? string.Empty);
         var zip = Uri.EscapeDataString(address.ZipCode ?? string.Empty);
 
-        var combined = $"?api_key={apiKey}&address={street}&locality={city}&region={state}&postalcode={zip}";
+        var combined = $"search/structured?api_key={apiKey}&address={street}&locality={city}&region={state}&postalcode={zip}";
         return combined;
+    }
+
+    private static string BuildQueryString(GeocodeLocation location, string apiKey)
+    {
+        return $"reverse?api_key={apiKey}&point.lat={location.Latitude}&point.lon={location.Longitude}";
     }
 }

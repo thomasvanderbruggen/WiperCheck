@@ -10,9 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddHttpClient<IGeocodeService, GeocodeService>(client =>
+builder.Services.AddHttpClient<GeocodeService>(client =>
 {
-    client.BaseAddress = new Uri("https://api.openrouteservice.org/geocode/search/structured");
+    client.BaseAddress = new Uri("https://api.openrouteservice.org/geocode/");
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 builder.Services.AddHttpClient<RoutingService>(client =>

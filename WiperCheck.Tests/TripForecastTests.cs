@@ -24,7 +24,7 @@ public class TripForecastTests
         
         var geocodeHttpClient = new HttpClient
         {
-            BaseAddress = new Uri("https://api.openrouteservice.org/geocode/search/structured")
+            BaseAddress = new Uri("https://api.openrouteservice.org/geocode/")
         };
 
         var routingHttpClient = new HttpClient

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using WiperCheck.Models.Forms;
+using WiperCheck.Models.Utilities;
 using WiperCheck.Services.Geocoding;
 
 namespace WiperCheck.Tests;
@@ -14,7 +15,27 @@ public class GeocodeServiceTests
             .Build();
         
         var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri("https://api.openrouteservice.org/geocode/search/structured");
+        httpClient.BaseAddress = new Uri("https://api.openrouteservice.org/geocode/");
+
+        var service = new GeocodeService(httpClient, config);
+
+        var testGeo = new GeocodeLocation("Washington", 38.897691, -77.041684); 
+        var result = await service.GetAddress(testGeo);
+
+        // Assert that the result is not null and contains the expected city name
+        Assert.NotNull(result);
+        Assert.Contains("District of Columbia", result.State);
+        Assert.Contains("Washington", result.City);
+    }
+    [Fact]
+    public async Task GetAddress_WithValidCoordinates_ReturnsCorrectAddress()
+    {
+        var config = new ConfigurationBuilder()
+            .AddUserSecrets<GeocodeServiceTests>()
+            .Build();
+        
+        var httpClient = new HttpClient();
+        httpClient.BaseAddress = new Uri("https://api.openrouteservice.org/geocode/reverse");
 
         var service = new GeocodeService(httpClient, config);
 

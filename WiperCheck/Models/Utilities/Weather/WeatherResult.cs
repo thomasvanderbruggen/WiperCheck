@@ -2,7 +2,7 @@ namespace WiperCheck.Models.Utilities.Weather;
 
 public record WeatherResult
 {
-    public GeocodeLocation Coordinate { get; init; }
+    public GeocodeLocation Coordinate { get; set; }
     public DateTime UtcForecastTime { get; init; }
     public string TimeZone { get; init; }
     public long UtcOffsetSeconds { get; init; }

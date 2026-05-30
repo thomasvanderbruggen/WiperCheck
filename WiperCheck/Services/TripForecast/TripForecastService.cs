@@ -1,3 +1,4 @@
+using WiperCheck.Models.Forms;
 using WiperCheck.Models.Requests;
 using WiperCheck.Models.Responses;
 using WiperCheck.Models.Utilities.Routing;
@@ -36,18 +37,29 @@ public class TripForecastService
         var route = await _routingService.GetRoute(startGeo, endGeo);
 
         var weatherTasks = route.Steps.Select<RouteStep, Task<WeatherResult>>(step => _weatherService.GetWeather(step.Location, request.DepartureTime.AddSeconds(step.Duration)));
+        var reverseGeoTasks = route.Steps.Select<RouteStep, Task<Address>>(step => _geocodeService.GetAddress(step.Location));
         
         var weatherResults = await Task.WhenAll(weatherTasks);
+        var addresses = await Task.WhenAll(reverseGeoTasks);
+        
+        
         
         var tfr = new TripForecastResult
         {
             TotalDistanceMiles = route.TotalDistanceMiles, TotalDurationSeconds = route.TotalTimeSeconds, 
-            Waypoints = route.Steps.Select((waypoint, index) => new WaypointForecast
+            Waypoints = route.Steps.Select((waypoint, index) =>
+            {
+                var weather = weatherResults[index];
+                weather.Coordinate = weather.Coordinate with
+                {
+                    DisplayName = $"{addresses[index].City}, {addresses[index].State}"
+                };
+                return new WaypointForecast
                 {
                     WaypointIndex = index,
-                    WeatherResult = weatherResults[index]
-                })
-                .ToList()
+                    WeatherResult = weather
+                };
+            }).ToList()
         };
 
         return tfr;

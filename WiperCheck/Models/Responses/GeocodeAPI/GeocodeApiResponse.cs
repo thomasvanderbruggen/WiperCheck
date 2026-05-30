@@ -150,23 +150,6 @@ public class Engine
     public string Version { get; set; }
 }
 
-public class Query
-{
-    [JsonPropertyName("parsed_text")]
-    public ParsedText ParsedText { get; set; }
-
-    [JsonPropertyName("size")]
-    public double Size { get; set; }
-
-    [JsonPropertyName("private")]
-    public bool Private { get; set; }
-
-    [JsonPropertyName("lang")]
-    public Lang Lang { get; set; }
-
-    [JsonPropertyName("querySize")]
-    public double QuerySize { get; set; }
-}
 
 public class Lang
 {
@@ -186,20 +169,3 @@ public class Lang
     public bool Defaulted { get; set; }
 }
 
-public class ParsedText
-{
-    [JsonPropertyName("city")]
-    public string City { get; set; }
-
-    [JsonPropertyName("state")]
-    public string State { get; set; }
-
-    [JsonPropertyName("postalcode")]
-    public string Postalcode { get; set; }
-
-    [JsonPropertyName("housenumber")]
-    public string Housenumber { get; set; }
-
-    [JsonPropertyName("street")]
-    public string Street { get; set; }
-}

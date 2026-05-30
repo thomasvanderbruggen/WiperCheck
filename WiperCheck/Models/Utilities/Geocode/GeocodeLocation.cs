@@ -1,6 +1,6 @@
 namespace WiperCheck.Models.Utilities;
 
-public class GeocodeLocation
+public record GeocodeLocation
 {
     public string DisplayName { get; set; } = string.Empty;
     public double Latitude { get; set; }

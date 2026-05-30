@@ -1,7 +1,697 @@
 ﻿@page "/"
+@inject TripForecastService TripForecastService
+@using WiperCheck.Models.Forms
+@using WiperCheck.Models.Requests
+@using WiperCheck.Models.Utilities.Weather
+@using WiperCheck.Services.TripForecast
+@using WiperCheck.ViewModels.TripForecast
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>WiperCheck</PageTitle>
 
-<h1>Hello, world!</h1>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-Welcome to your new app.
+<div class="wc-layout">
+    <aside class="wc-sidebar">
+        <div class="wc-brand">
+            <span class="wc-brand-icon">⛈</span>
+            <div>
+                <h1 class="wc-brand-title">WIPERCHECK</h1>
+                <p class="wc-brand-sub">Road Trip Weather Intelligence</p>
+            </div>
+        </div>
+
+        <div class="wc-form">
+            <div class="wc-address-block">
+                <div class="wc-block-label">
+                    <span class="wc-dot wc-dot--start"></span>
+                    ORIGIN
+                </div>
+                <div class="wc-field-grid">
+                    <div class="wc-field wc-field--full">
+                        <label>Street</label>
+                        <input @bind="_request.StartAddress.Street" placeholder="1600 Pennsylvania Ave" />
+                    </div>
+                    <div class="wc-field">
+                        <label>City</label>
+                        <input @bind="_request.StartAddress.City" placeholder="Washington" />
+                    </div>
+                    <div class="wc-field wc-field--small">
+                        <label>State</label>
+                        <input @bind="_request.StartAddress.State" placeholder="DC" maxlength="2" />
+                    </div>
+                    <div class="wc-field">
+                        <label>ZIP</label>
+                        <input @bind="_request.StartAddress.ZipCode" placeholder="20500" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="wc-route-line">
+                <div class="wc-route-line-inner"></div>
+            </div>
+
+            <div class="wc-address-block">
+                <div class="wc-block-label">
+                    <span class="wc-dot wc-dot--end"></span>
+                    DESTINATION
+                </div>
+                <div class="wc-field-grid">
+                    <div class="wc-field wc-field--full">
+                        <label>Street</label>
+                        <input @bind="_request.EndAddress.Street" placeholder="233 S Wacker Dr" />
+                    </div>
+                    <div class="wc-field">
+                        <label>City</label>
+                        <input @bind="_request.EndAddress.City" placeholder="Chicago" />
+                    </div>
+                    <div class="wc-field wc-field--small">
+                        <label>State</label>
+                        <input @bind="_request.EndAddress.State" placeholder="IL" maxlength="2" />
+                    </div>
+                    <div class="wc-field">
+                        <label>ZIP</label>
+                        <input @bind="_request.EndAddress.ZipCode" placeholder="60606" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="wc-departure">
+                <div class="wc-block-label">
+                    <span class="wc-label-icon">🕐</span>
+                    DEPARTURE
+                </div>
+                <input class="wc-datetime" type="datetime-local" @bind="_request.DepartureTime" />
+            </div>
+
+            <button class="wc-submit" @onclick="HandleSubmit" disabled="@_isLoading">
+                @if (_isLoading)
+                {
+                    <span class="wc-spinner"></span>
+                    <span>ANALYZING ROUTE...</span>
+                }
+                else
+                {
+                    <span>CHECK THE ROUTE</span>
+                }
+            </button>
+
+            @if (_errorMessage != null)
+            {
+                <div class="wc-error">
+                    <span>⚠</span> @_errorMessage
+                </div>
+            }
+        </div>
+    </aside>
+
+    <main class="wc-results">
+        @if (_result == null && !_isLoading)
+        {
+            <div class="wc-empty">
+                <div class="wc-empty-icon">🌦</div>
+                <p class="wc-empty-title">Enter a route to begin</p>
+                <p class="wc-empty-sub">Hourly forecasts for every mile of your trip</p>
+            </div>
+        }
+        else if (_isLoading)
+        {
+            <div class="wc-empty">
+                <div class="wc-empty-icon wc-pulse">⛅</div>
+                <p class="wc-empty-title">Reading the skies...</p>
+                <p class="wc-empty-sub">Fetching forecasts along your route</p>
+            </div>
+        }
+        else if (_result != null)
+        {
+            <div class="wc-results-header">
+                <div class="wc-results-stat">
+                    <span class="wc-stat-value">@Math.Round(_result.TotalDistanceMiles)</span>
+                    <span class="wc-stat-label">MILES</span>
+                </div>
+                <div class="wc-results-divider"></div>
+                <div class="wc-results-stat">
+                    <span class="wc-stat-value">@FormatDuration(_result.TotalDurationSeconds)</span>
+                    <span class="wc-stat-label">DRIVE TIME</span>
+                </div>
+                <div class="wc-results-divider"></div>
+                <div class="wc-results-stat">
+                    <span class="wc-stat-value">@_result.Waypoints.Count</span>
+                    <span class="wc-stat-label">WAYPOINTS</span>
+                </div>
+            </div>
+
+            <div class="wc-cards">
+                @foreach (var waypoint in _result.Waypoints)
+                {
+                    var w = waypoint.WeatherResult;
+                    var isExtreme = w.HasExtremeWeatherWarning;
+                    <div class="wc-card @(isExtreme ? "wc-card--extreme" : "") @GetConditionClass(w.Condition)">
+                        @if (isExtreme)
+                        {
+                            <div class="wc-extreme-banner">
+                                ⚠ @w.ExtremeWeatherDescription
+                            </div>
+                        }
+                        <div class="wc-card-header">
+                            <div class="wc-card-location">
+                                <div class="wc-card-temp">
+                                    <span class="wc-temp-real" style="color: @GetTempColor(w.TemperatureF)" >@w.TemperatureF°</span>
+                                    <span class="wc-temp-feels" style="color: @GetTempColor(w.FeelsLikeF)">Feels @w.FeelsLikeF°</span>
+                                </div>
+                                <span class="wc-card-icon">@GetWeatherIcon(w.Condition)</span>
+                                <div>
+                                    <div class="wc-card-place">@w.Coordinate.DisplayName</div>
+                                    <div class="wc-card-time">
+                                        @w.UtcForecastTime.AddSeconds(w.UtcOffsetSeconds).ToString("ddd MMM d · h:mm tt")
+                                        <span class="wc-tz">@w.TimeZone</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wc-card-grid">
+                            <div class="wc-metric">
+                                <span class="wc-metric-label">PRECIP</span>
+                                <span class="wc-metric-value">@w.PrecipitationProbability.ToString("0")%</span>
+                                <span class="wc-metric-sub">@w.PrecipitationType</span>
+                            </div>
+                            <div class="wc-metric">
+                                <span class="wc-metric-label">CLOUD</span>
+                                <span class="wc-metric-value">@w.CloudCoverPercent%</span>
+                                <span class="wc-metric-sub">cover</span>
+                            </div>
+                            <div class="wc-metric">
+                                <span class="wc-metric-label">WIND</span>
+                                <span class="wc-metric-value">@w.WindSpeedMph</span>
+                                <span class="wc-metric-sub">mph @GetWindDirection(w.WindDirectionDegrees)</span>
+                            </div>
+                            <div class="wc-metric">
+                                <span class="wc-metric-label">GUSTS</span>
+                                <span class="wc-metric-value">@w.WindGustsMph</span>
+                                <span class="wc-metric-sub">mph</span>
+                            </div>
+                            <div class="wc-metric">
+                                <span class="wc-metric-label">VISIBILITY</span>
+                                <span class="wc-metric-value">@Math.Round(w.VisibilityFt / 5280.0, 1)</span>
+                                <span class="wc-metric-sub">miles</span>
+                            </div>
+                            <div class="wc-metric">
+                                <span class="wc-metric-label">CONDITIONS</span>
+                                <span class="wc-metric-value wc-metric-value--sm">@w.Condition</span>
+                                <span class="wc-metric-sub">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </main>
+</div>
+
+<style>
+    :root {
+        --bg: #0f1117;
+        --surface: #181c25;
+        --surface-2: #1e2330;
+        --border: rgba(255,255,255,0.07);
+        --border-bright: rgba(255,255,255,0.15);
+        --text: #e8eaf0;
+        --text-muted: #5a6070;
+        --text-dim: #8890a0;
+        --accent: #4a9eff;
+        --accent-glow: rgba(74,158,255,0.15);
+        --warn: #f59e0b;
+        --danger: #ef4444;
+        --success: #22c55e;
+        --sidebar-width: 360px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+    }
+
+    .wc-layout {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* SIDEBAR */
+    .wc-sidebar {
+        width: var(--sidebar-width);
+        flex-shrink: 0;
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        padding: 28px 24px;
+        gap: 24px;
+    }
+
+    .wc-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .wc-brand-icon { font-size: 28px; }
+
+    .wc-brand-title {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        color: var(--text);
+        line-height: 1;
+    }
+
+    .wc-brand-sub {
+        font-size: 10px;
+        color: var(--text-muted);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-top: 3px;
+    }
+
+    .wc-form { display: flex; flex-direction: column; gap: 16px; }
+
+    .wc-block-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .wc-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .wc-dot--start { background: var(--success); box-shadow: 0 0 6px var(--success); }
+    .wc-dot--end { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+
+    .wc-field-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .wc-field--full { grid-column: 1 / -1; }
+    .wc-field--small { max-width: 70px; }
+
+    .wc-field { display: flex; flex-direction: column; gap: 4px; }
+
+    .wc-field label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--text-muted);
+    }
+
+    .wc-field input, .wc-datetime {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 8px 10px;
+        color: var(--text);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.15s;
+        width: 100%;
+    }
+
+    .wc-field input:focus, .wc-datetime:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .wc-field input::placeholder { color: var(--text-muted); }
+
+    .wc-datetime { color-scheme: dark; }
+
+    .wc-route-line {
+        padding: 4px 0;
+    }
+
+    .wc-route-line-inner {
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(to right, var(--success), var(--accent));
+        opacity: 0.4;
+    }
+
+    .wc-label-icon { font-size: 13px; }
+
+    .wc-submit {
+        margin-top: 8px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 14px;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        transition: opacity 0.15s, transform 0.1s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .wc-submit:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+    .wc-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .wc-spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        display: inline-block;
+    }
+
+    .wc-error {
+        background: rgba(239,68,68,0.1);
+        border: 1px solid rgba(239,68,68,0.3);
+        border-radius: 6px;
+        padding: 10px 12px;
+        font-size: 12px;
+        color: #fca5a5;
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    /* RESULTS */
+    .wc-results {
+        flex: 1;
+        overflow-y: auto;
+        background: var(--bg);
+        padding: 28px;
+    }
+
+    .wc-empty {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        opacity: 0.4;
+    }
+
+    .wc-empty-icon { font-size: 48px; }
+    .wc-pulse { animation: pulse 2s ease-in-out infinite; }
+
+    .wc-empty-title {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 20px;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        color: var(--text);
+    }
+
+    .wc-empty-sub { font-size: 13px; color: var(--text-muted); }
+
+    .wc-results-header {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 24px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .wc-results-stat { text-align: center; }
+
+    .wc-stat-value {
+        display: block;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 38px;
+        font-weight: 600;
+        color: var(--accent);
+        line-height: 1;
+    }
+
+    .wc-stat-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        margin-top: 4px;
+        display: block;
+    }
+
+    .wc-results-divider {
+        width: 1px;
+        height: 40px;
+        background: var(--border);
+    }
+
+    /* CARDS */
+    .wc-cards { display: flex; flex-direction: column; gap: 12px; }
+
+    .wc-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        transition: border-color 0.15s;
+    }
+
+    .wc-card:hover { border-color: var(--border-bright); }
+    .wc-card--extreme { border-color: rgba(239,68,68,0.4); }
+    .wc-card--extreme:hover { border-color: rgba(239,68,68,0.7); }
+
+    .wc-extreme-banner {
+        background: rgba(239,68,68,0.15);
+        border-bottom: 1px solid rgba(239,68,68,0.3);
+        padding: 8px 16px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #fca5a5;
+        letter-spacing: 0.04em;
+    }
+
+    .wc-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .wc-card-location { display: flex; align-items: center; gap: 12px; }
+    .wc-card-icon { font-size: 28px; }
+
+    .wc-card-place {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        color: var(--text);
+    }
+
+    .wc-card-time {
+        font-size: 14px;
+        color: var(--text-dim);
+        margin-top: 2px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .wc-tz {
+        font-size: 10px;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        padding: 1px 5px;
+        color: var(--text-muted);
+        letter-spacing: 0.05em;
+    }
+
+    .wc-card-temp { text-align: left; }
+
+    .wc-temp-real {
+        display: block;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 42px;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1;
+    }
+
+    .wc-temp-feels {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-top: 2px;
+        display: block;
+    }
+
+    .wc-card-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        padding: 12px 16px;
+        gap: 8px;
+    }
+
+    .wc-metric {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .wc-metric-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+    }
+
+    .wc-metric-value {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1;
+    }
+
+    .wc-metric-value--sm {
+        font-size: 20px;
+        line-height: 1.3;
+    }
+
+    .wc-metric-sub {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    /* Condition accent colors */
+    .wc-cond-rain .wc-card-icon,
+    .wc-cond-drizzle .wc-card-icon { filter: hue-rotate(200deg); }
+    .wc-cond-snow .wc-card-icon { filter: brightness(1.5) saturate(0); }
+    .wc-cond-thunderstorm .wc-card-icon { filter: hue-rotate(40deg) brightness(1.2); }
+
+    @@keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    @@keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.4; }
+        50% { transform: scale(1.1); opacity: 0.6; }
+    }
+</style>
+
+@code {
+    private TripForecastRequest _request = new()
+    {
+        StartAddress = new Address(),
+        EndAddress = new Address(),
+        DepartureTime = DateTime.Today.AddHours(8)
+    };
+
+    private TripForecastResult? _result;
+    private bool _isLoading;
+    private string? _errorMessage;
+
+    private async Task HandleSubmit()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+        _result = null;
+        StateHasChanged();
+
+        try
+        {
+            _result = await TripForecastService.GetTripForecast(_request);
+            var a = 0;
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private static string FormatDuration(double totalSeconds)
+    {
+        var ts = TimeSpan.FromSeconds(totalSeconds);
+        return ts.Hours > 0
+            ? $"{ts.Hours}h {ts.Minutes}m"
+            : $"{ts.Minutes}m";
+    }
+    
+    private static string GetTempColor(int tempF) => tempF switch
+    {
+        < 20 => "#93c5fd",   // deep blue
+        < 32 => "#bfdbfe",   // light blue
+        < 45 => "#dbeafe",   // very light blue
+        < 60 => "#e0f2fe",   // near white-blue
+        < 70 => "#f0fdf4",   // near white
+        < 80 => "#fef9c3",   // near white-yellow
+        < 90 => "#fed7aa",   // light orange
+        < 100 => "#fca5a5",  // light red
+        _ => "#f87171"       // deep red
+    };
+
+    private static string GetWeatherIcon(WeatherCondition condition) => condition switch
+    {
+        WeatherCondition.Clear => "☀️",
+        WeatherCondition.PartlyCloudy => "⛅",
+        WeatherCondition.Overcast => "☁️",
+        WeatherCondition.Foggy => "🌫️",
+        WeatherCondition.Drizzle => "🌦️",
+        WeatherCondition.Rain => "🌧️",
+        WeatherCondition.Snow => "❄️",
+        WeatherCondition.Sleet => "🌨️",
+        WeatherCondition.Thunderstorm => "⛈️",
+        WeatherCondition.Hail => "🌩️",
+        _ => "🌡️"
+    };
+
+    private static string GetConditionClass(WeatherCondition condition) => condition switch
+    {
+        WeatherCondition.Rain or WeatherCondition.Drizzle => "wc-cond-rain",
+        WeatherCondition.Snow or WeatherCondition.Sleet => "wc-cond-snow",
+        WeatherCondition.Thunderstorm or WeatherCondition.Hail => "wc-cond-thunderstorm",
+        _ => ""
+    };
+
+    private static string GetWindDirection(int degrees) => degrees switch
+    {
+        < 23 or >= 338 => "N",
+        < 68 => "NE",
+        < 113 => "E",
+        < 158 => "SE",
+        < 203 => "S",
+        < 248 => "SW",
+        < 293 => "W",
+        _ => "NW"
+    };
+}
