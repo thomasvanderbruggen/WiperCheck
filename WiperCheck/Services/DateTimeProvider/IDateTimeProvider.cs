@@ -1,4 +1,4 @@
-namespace WiperCheck.Services.DateTime;
+namespace WiperCheck.Services.DateTimeProvider;
 
 public interface IDateTimeProvider
 {

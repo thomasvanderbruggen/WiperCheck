@@ -1,6 +1,5 @@
 using WiperCheck.Models.Forms;
 using WiperCheck.Models.Requests;
-using WiperCheck.Models.Responses;
 using WiperCheck.Models.Utilities.Routing;
 using WiperCheck.Models.Utilities.Weather;
 using WiperCheck.Services.Geocoding;
@@ -27,21 +26,26 @@ public class TripForecastService
 
     public async Task<TripForecastResult> GetTripForecast(TripForecastRequest request)
     {
+        // Coordinates
         var start =  _geocodeService.GetCoordinates(request.StartAddress);
         var end = _geocodeService.GetCoordinates(request.EndAddress);
-        
         var geoResults = await Task.WhenAll(start, end);
 
+        // Routing
         var startGeo = geoResults[0];
         var endGeo = geoResults[1];
         var route = await _routingService.GetRoute(startGeo, endGeo);
+        
+        // Weather
+        var departureUtc = request.DepartureTime.AddSeconds(-await _weatherService.GetUtcOffsetAsync(startGeo));
+        
 
-        var weatherTasks = route.Steps.Select<RouteStep, Task<WeatherResult>>(step => _weatherService.GetWeather(step.Location, request.DepartureTime.AddSeconds(step.Duration)));
+        
+        var weatherTasks = route.Steps.Select<RouteStep, Task<WeatherResult>>(step => _weatherService.GetWeather(step.Location, departureUtc.AddSeconds(step.Duration)));
         var reverseGeoTasks = route.Steps.Select<RouteStep, Task<Address>>(step => _geocodeService.GetAddress(step.Location));
         
         var weatherResults = await Task.WhenAll(weatherTasks);
         var addresses = await Task.WhenAll(reverseGeoTasks);
-        
         
         
         var tfr = new TripForecastResult

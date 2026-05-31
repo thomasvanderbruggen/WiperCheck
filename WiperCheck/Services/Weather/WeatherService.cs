@@ -1,17 +1,16 @@
 using System.Numerics;
-using Microsoft.Extensions.Options;
-using WiperCheck.Models.Forms;
 using WiperCheck.Models.Responses;
 using WiperCheck.Models.Utilities;
 using WiperCheck.Models.Utilities.Weather;
-using WiperCheck.Services.DateTime;
+using WiperCheck.Services.DateTimeProvider;
 
 namespace WiperCheck.Services.Weather;
 
 public class WeatherService(HttpClient httpClient, IConfiguration config, IDateTimeProvider dateTimeProvider) : IWeatherService
 {
-    public async Task<WeatherResult> GetWeather(GeocodeLocation location, System.DateTime arrivalTime)
+    public async Task<WeatherResult> GetWeather(GeocodeLocation location, DateTime arrivalUtc)
     {
+        var requestUtc = DateTime.UtcNow;
         var response = await httpClient.GetAsync(BuildQueryString(location));
         response.EnsureSuccessStatusCode();
         
@@ -22,12 +21,29 @@ public class WeatherService(HttpClient httpClient, IConfiguration config, IDateT
             throw new InvalidOperationException("Weather API returned an empty response.");
         }
     
-        return MapToWeatherResult(location, apiResult, arrivalTime);
+        return MapToWeatherResult(location, apiResult, arrivalUtc, requestUtc);
+    }
+    
+    public async Task<long> GetUtcOffsetAsync(GeocodeLocation location)
+    {
+        var response = await httpClient.GetAsync(BuildQueryString(location));
+        response.EnsureSuccessStatusCode();
+        var apiResult = await response.Content.ReadFromJsonAsync<WeatherApiResponse>();
+        return apiResult?.UtcOffsetSeconds 
+               ?? throw new InvalidOperationException("Could not determine UTC offset for departure location.");
     }
 
-    internal WeatherResult MapToWeatherResult(GeocodeLocation location, WeatherApiResponse apiResult, System.DateTime arrivalTime)
+    internal WeatherResult MapToWeatherResult(GeocodeLocation location, WeatherApiResponse apiResult, DateTime arrivalUtc, DateTime requestUtc)
     {
-        var hourIndex = (arrivalTime - dateTimeProvider.Today).TotalHours;
+        // The API response's hourly forecast array starts at midnight of the day the HTTP request was made in the requested location's timezone. 
+        // We need to convert from Utc to local time to get the correct forecast for the requested arrival time. 
+        var requestAtWaypointTime = requestUtc.AddSeconds(apiResult.UtcOffsetSeconds);
+        var forecastArrayStart = requestAtWaypointTime.Date; 
+        
+        var localArrivalTime = arrivalUtc.AddSeconds(apiResult.UtcOffsetSeconds);
+        
+        var hourIndex = (localArrivalTime - forecastArrayStart).TotalHours;
+        
         var hourly = apiResult.Hourly;
         var weatherCode = GetValueAtRoundedIndex(hourly.WeatherCode, hourIndex);
 
@@ -35,7 +51,7 @@ public class WeatherService(HttpClient httpClient, IConfiguration config, IDateT
         {
             // Vitals
             Coordinate = location,
-            UtcForecastTime = arrivalTime,
+            UtcForecastTime = arrivalUtc,
             TimeZone = apiResult.Timezone ?? string.Empty,
             UtcOffsetSeconds = apiResult.UtcOffsetSeconds,
 
