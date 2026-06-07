@@ -6,5 +6,6 @@ public class TripForecastRequest
 {
     public Address StartAddress { get; set; }
     public Address EndAddress { get; set; }
-    public DateTime DepartureTime { get; set; }
+    public DateTime EarliestDeparture { get; set; }
+    public DateTime LatestDeparture { get; set; }
 }

@@ -61,16 +61,20 @@ public class TripForecastTests
                 State = "IL",
                 ZipCode = "60602"
             },
-            DepartureTime = DateTime.Today.AddHours(8)
+            EarliestDeparture = DateTime.Today.AddHours(8),
+            LatestDeparture = DateTime.Today.AddHours(10)
         };
 
         // Act
-        var result = await tripForecastService.GetTripForecast(request);
+        var results = await tripForecastService.GetTripForecast(request);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.NotEmpty(result.Waypoints);
-        Assert.All(result.Waypoints, w => Assert.NotNull(w.WeatherResult));
-        Assert.True(result.TotalDistanceMiles > 0);
+        Assert.NotNull(results);
+        Assert.Equal(3, results.Count); // 8 AM, 9 AM, 10 AM
+        Assert.Equal(1, results[0].Rank);
+        var best = results[0].Trip;
+        Assert.NotEmpty(best.Waypoints);
+        Assert.All(best.Waypoints, w => Assert.NotNull(w.WeatherResult));
+        Assert.True(best.TotalDistanceMiles > 0);
     }
 }

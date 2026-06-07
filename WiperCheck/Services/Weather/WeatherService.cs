@@ -8,29 +8,13 @@ namespace WiperCheck.Services.Weather;
 
 public class WeatherService(HttpClient httpClient, IConfiguration config, IDateTimeProvider dateTimeProvider) : IWeatherService
 {
-    public async Task<WeatherResult> GetWeather(GeocodeLocation location, DateTime arrivalUtc)
+    public async Task<WeatherApiResponse> GetForecast(GeocodeLocation location)
     {
-        var requestUtc = DateTime.UtcNow;
         var response = await httpClient.GetAsync(BuildQueryString(location));
         response.EnsureSuccessStatusCode();
-        
-        var apiResult = await response.Content.ReadFromJsonAsync<WeatherApiResponse>();
 
-        if (apiResult is null)
-        {
-            throw new InvalidOperationException("Weather API returned an empty response.");
-        }
-    
-        return MapToWeatherResult(location, apiResult, arrivalUtc, requestUtc);
-    }
-    
-    public async Task<long> GetUtcOffsetAsync(GeocodeLocation location)
-    {
-        var response = await httpClient.GetAsync(BuildQueryString(location));
-        response.EnsureSuccessStatusCode();
         var apiResult = await response.Content.ReadFromJsonAsync<WeatherApiResponse>();
-        return apiResult?.UtcOffsetSeconds 
-               ?? throw new InvalidOperationException("Could not determine UTC offset for departure location.");
+        return apiResult ?? throw new InvalidOperationException("Weather API returned an empty response.");
     }
 
     internal WeatherResult MapToWeatherResult(GeocodeLocation location, WeatherApiResponse apiResult, DateTime arrivalUtc, DateTime requestUtc)

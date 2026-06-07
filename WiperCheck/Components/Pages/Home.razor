@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @inject TripForecastService TripForecastService
 @using WiperCheck.Models.Forms
 @using WiperCheck.Models.Requests
@@ -79,9 +79,19 @@
             <div class="wc-departure">
                 <div class="wc-block-label">
                     <span class="wc-label-icon">🕐</span>
-                    DEPARTURE
+                    DEPARTURE WINDOW
                 </div>
-                <input class="wc-datetime" type="datetime-local" @bind="_request.DepartureTime" />
+                <div class="wc-departure-range">
+                    <div class="wc-field">
+                        <label>Earliest</label>
+                        <input class="wc-datetime" type="datetime-local" @bind="_request.EarliestDeparture" />
+                    </div>
+                    <div class="wc-departure-arrow">→</div>
+                    <div class="wc-field">
+                        <label>Latest</label>
+                        <input class="wc-datetime" type="datetime-local" @bind="_request.LatestDeparture" />
+                    </div>
+                </div>
             </div>
 
             <button class="wc-submit" @onclick="HandleSubmit" disabled="@_isLoading">
@@ -106,7 +116,7 @@
     </aside>
 
     <main class="wc-results">
-        @if (_result == null && !_isLoading)
+        @if (_results == null && !_isLoading)
         {
             <div class="wc-empty">
                 <div class="wc-empty-icon">🌦</div>
@@ -122,86 +132,136 @@
                 <p class="wc-empty-sub">Fetching forecasts along your route</p>
             </div>
         }
-        else if (_result != null)
+        else if (_results != null)
         {
+            var topTrip = _results[0].Trip;
+
             <div class="wc-results-header">
                 <div class="wc-results-stat">
-                    <span class="wc-stat-value">@Math.Round(_result.TotalDistanceMiles)</span>
+                    <span class="wc-stat-value">@Math.Round(topTrip.TotalDistanceMiles)</span>
                     <span class="wc-stat-label">MILES</span>
                 </div>
                 <div class="wc-results-divider"></div>
                 <div class="wc-results-stat">
-                    <span class="wc-stat-value">@FormatDuration(_result.TotalDurationSeconds)</span>
+                    <span class="wc-stat-value">@FormatDuration(topTrip.TotalDurationSeconds)</span>
                     <span class="wc-stat-label">DRIVE TIME</span>
                 </div>
                 <div class="wc-results-divider"></div>
                 <div class="wc-results-stat">
-                    <span class="wc-stat-value">@_result.Waypoints.Count</span>
+                    <span class="wc-stat-value">@topTrip.Waypoints.Count</span>
                     <span class="wc-stat-label">WAYPOINTS</span>
+                </div>
+                <div class="wc-results-divider"></div>
+                <div class="wc-results-stat">
+                    <span class="wc-stat-value">@_results.Count</span>
+                    <span class="wc-stat-label">OPTIONS</span>
                 </div>
             </div>
 
-            <div class="wc-cards">
-                @foreach (var waypoint in _result.Waypoints)
+            <div class="wc-accordion">
+                @foreach (var ranked in _results)
                 {
-                    var w = waypoint.WeatherResult;
-                    var isExtreme = w.HasExtremeWeatherWarning;
-                    <div class="wc-card @(isExtreme ? "wc-card--extreme" : "") @GetConditionClass(w.Condition)">
-                        @if (isExtreme)
+                    var isExpanded = _expandedRank == ranked.Rank;
+                    var isBest = ranked.Rank == 1;
+
+                    <div class="wc-accordion-row @(isBest ? "wc-accordion-row--best" : "") @(ranked.HasExtremeWarning ? "wc-accordion-row--extreme" : "")">
+                        <button class="wc-accordion-header" @onclick="() => ToggleAccordion(ranked.Rank)">
+                            <div class="wc-accordion-rank">
+                                <span class="wc-rank-badge @(isBest ? "wc-rank-badge--best" : "")">#@ranked.Rank</span>
+                                @if (isBest)
+                                {
+                                    <span class="wc-best-label">BEST</span>
+                                }
+                            </div>
+                            <div class="wc-accordion-depart">
+                                <span class="wc-accordion-time">@ranked.DepartureTime.ToString("ddd · h:mm tt")</span>
+                            </div>
+                            <div class="wc-accordion-score">
+                                <span class="wc-score-value">@((int)ranked.PenaltyScore)</span>
+                                <span class="wc-score-label">SCORE</span>
+                            </div>
+                            <div class="wc-accordion-warning-badge">
+                                @if (ranked.HasExtremeWarning)
+                                {
+                                    <span class="wc-warn-badge">⚠ EXTREME</span>
+                                }
+                                else
+                                {
+                                    <span class="wc-ok-badge">✓ CLEAR</span>
+                                }
+                            </div>
+                            <span class="wc-chevron">@(isExpanded ? "▾" : "▸")</span>
+                        </button>
+
+                        @if (isExpanded)
                         {
-                            <div class="wc-extreme-banner">
-                                ⚠ @w.ExtremeWeatherDescription
+                            <div class="wc-accordion-body">
+                                <div class="wc-cards">
+                                    @foreach (var waypoint in ranked.Trip.Waypoints)
+                                    {
+                                        var w = waypoint.WeatherResult;
+                                        var isExtreme = w.HasExtremeWeatherWarning;
+                                        <div class="wc-card @(isExtreme ? "wc-card--extreme" : "") @GetConditionClass(w.Condition)">
+                                            @if (isExtreme)
+                                            {
+                                                <div class="wc-extreme-banner">
+                                                    ⚠ @w.ExtremeWeatherDescription
+                                                </div>
+                                            }
+                                            <div class="wc-card-header">
+                                                <div class="wc-card-location">
+                                                    <div class="wc-card-temp">
+                                                        <span class="wc-temp-real" style="color: @GetTempColor(w.TemperatureF)">@w.TemperatureF°</span>
+                                                        <span class="wc-temp-feels" style="color: @GetTempColor(w.FeelsLikeF)">Feels @w.FeelsLikeF°</span>
+                                                    </div>
+                                                    <span class="wc-card-icon">@GetWeatherIcon(w.Condition)</span>
+                                                    <div>
+                                                        <div class="wc-card-place">@w.Coordinate.DisplayName</div>
+                                                        <div class="wc-card-time">
+                                                            @w.UtcForecastTime.AddSeconds(w.UtcOffsetSeconds).ToString("ddd MMM d · h:mm tt")
+                                                            <span class="wc-tz">@w.TimeZone</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="wc-card-grid">
+                                                <div class="wc-metric">
+                                                    <span class="wc-metric-label">PRECIP</span>
+                                                    <span class="wc-metric-value">@w.PrecipitationProbability.ToString("0")%</span>
+                                                    <span class="wc-metric-sub">@w.PrecipitationType</span>
+                                                </div>
+                                                <div class="wc-metric">
+                                                    <span class="wc-metric-label">CLOUD</span>
+                                                    <span class="wc-metric-value">@w.CloudCoverPercent%</span>
+                                                    <span class="wc-metric-sub">cover</span>
+                                                </div>
+                                                <div class="wc-metric">
+                                                    <span class="wc-metric-label">WIND</span>
+                                                    <span class="wc-metric-value">@w.WindSpeedMph</span>
+                                                    <span class="wc-metric-sub">mph @GetWindDirection(w.WindDirectionDegrees)</span>
+                                                </div>
+                                                <div class="wc-metric">
+                                                    <span class="wc-metric-label">GUSTS</span>
+                                                    <span class="wc-metric-value">@w.WindGustsMph</span>
+                                                    <span class="wc-metric-sub">mph</span>
+                                                </div>
+                                                <div class="wc-metric">
+                                                    <span class="wc-metric-label">VISIBILITY</span>
+                                                    <span class="wc-metric-value">@Math.Round(w.VisibilityFt / 5280.0, 1)</span>
+                                                    <span class="wc-metric-sub">miles</span>
+                                                </div>
+                                                <div class="wc-metric">
+                                                    <span class="wc-metric-label">CONDITIONS</span>
+                                                    <span class="wc-metric-value wc-metric-value--sm">@w.Condition</span>
+                                                    <span class="wc-metric-sub">&nbsp;</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         }
-                        <div class="wc-card-header">
-                            <div class="wc-card-location">
-                                <div class="wc-card-temp">
-                                    <span class="wc-temp-real" style="color: @GetTempColor(w.TemperatureF)" >@w.TemperatureF°</span>
-                                    <span class="wc-temp-feels" style="color: @GetTempColor(w.FeelsLikeF)">Feels @w.FeelsLikeF°</span>
-                                </div>
-                                <span class="wc-card-icon">@GetWeatherIcon(w.Condition)</span>
-                                <div>
-                                    <div class="wc-card-place">@w.Coordinate.DisplayName</div>
-                                    <div class="wc-card-time">
-                                        @w.UtcForecastTime.AddSeconds(w.UtcOffsetSeconds).ToString("ddd MMM d · h:mm tt")
-                                        <span class="wc-tz">@w.TimeZone</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="wc-card-grid">
-                            <div class="wc-metric">
-                                <span class="wc-metric-label">PRECIP</span>
-                                <span class="wc-metric-value">@w.PrecipitationProbability.ToString("0")%</span>
-                                <span class="wc-metric-sub">@w.PrecipitationType</span>
-                            </div>
-                            <div class="wc-metric">
-                                <span class="wc-metric-label">CLOUD</span>
-                                <span class="wc-metric-value">@w.CloudCoverPercent%</span>
-                                <span class="wc-metric-sub">cover</span>
-                            </div>
-                            <div class="wc-metric">
-                                <span class="wc-metric-label">WIND</span>
-                                <span class="wc-metric-value">@w.WindSpeedMph</span>
-                                <span class="wc-metric-sub">mph @GetWindDirection(w.WindDirectionDegrees)</span>
-                            </div>
-                            <div class="wc-metric">
-                                <span class="wc-metric-label">GUSTS</span>
-                                <span class="wc-metric-value">@w.WindGustsMph</span>
-                                <span class="wc-metric-sub">mph</span>
-                            </div>
-                            <div class="wc-metric">
-                                <span class="wc-metric-label">VISIBILITY</span>
-                                <span class="wc-metric-value">@Math.Round(w.VisibilityFt / 5280.0, 1)</span>
-                                <span class="wc-metric-sub">miles</span>
-                            </div>
-                            <div class="wc-metric">
-                                <span class="wc-metric-label">CONDITIONS</span>
-                                <span class="wc-metric-value wc-metric-value--sm">@w.Condition</span>
-                                <span class="wc-metric-sub">&nbsp;</span>
-                            </div>
-                        </div>
                     </div>
                 }
             </div>
@@ -359,6 +419,21 @@
 
     .wc-label-icon { font-size: 13px; }
 
+    .wc-departure-range {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+    }
+
+    .wc-departure-range .wc-field { flex: 1; }
+
+    .wc-departure-arrow {
+        color: var(--text-muted);
+        font-size: 16px;
+        padding-bottom: 9px;
+        flex-shrink: 0;
+    }
+
     .wc-submit {
         margin-top: 8px;
         background: var(--accent);
@@ -470,11 +545,139 @@
         background: var(--border);
     }
 
+    /* ACCORDION */
+    .wc-accordion { display: flex; flex-direction: column; gap: 8px; }
+
+    .wc-accordion-row {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        transition: border-color 0.15s;
+    }
+
+    .wc-accordion-row--best {
+        border-color: rgba(74,158,255,0.4);
+    }
+
+    .wc-accordion-row--extreme {
+        border-color: rgba(239,68,68,0.4);
+    }
+
+    .wc-accordion-header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 14px 16px;
+        background: none;
+        border: none;
+        color: var(--text);
+        cursor: pointer;
+        text-align: left;
+        transition: background 0.1s;
+    }
+
+    .wc-accordion-header:hover { background: rgba(255,255,255,0.03); }
+
+    .wc-accordion-rank {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 80px;
+    }
+
+    .wc-rank-badge {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text-dim);
+    }
+
+    .wc-rank-badge--best { color: var(--accent); }
+
+    .wc-best-label {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        color: var(--accent);
+        background: var(--accent-glow);
+        border: 1px solid rgba(74,158,255,0.3);
+        border-radius: 3px;
+        padding: 2px 5px;
+    }
+
+    .wc-accordion-depart { flex: 1; }
+
+    .wc-accordion-time {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+    }
+
+    .wc-accordion-score {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 60px;
+    }
+
+    .wc-score-value {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1;
+    }
+
+    .wc-score-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+    }
+
+    .wc-accordion-warning-badge { min-width: 90px; text-align: right; }
+
+    .wc-warn-badge {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        color: #fca5a5;
+        background: rgba(239,68,68,0.12);
+        border: 1px solid rgba(239,68,68,0.3);
+        border-radius: 4px;
+        padding: 3px 7px;
+    }
+
+    .wc-ok-badge {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        color: var(--success);
+        background: rgba(34,197,94,0.08);
+        border: 1px solid rgba(34,197,94,0.2);
+        border-radius: 4px;
+        padding: 3px 7px;
+    }
+
+    .wc-chevron {
+        font-size: 14px;
+        color: var(--text-muted);
+        flex-shrink: 0;
+    }
+
+    .wc-accordion-body {
+        border-top: 1px solid var(--border);
+        padding: 16px;
+    }
+
     /* CARDS */
     .wc-cards { display: flex; flex-direction: column; gap: 12px; }
 
     .wc-card {
-        background: var(--surface);
+        background: var(--surface-2);
         border: 1px solid var(--border);
         border-radius: 10px;
         overflow: hidden;
@@ -610,24 +813,32 @@
     {
         StartAddress = new Address(),
         EndAddress = new Address(),
-        DepartureTime = DateTime.Today.AddHours(8)
+        EarliestDeparture = DateTime.Today.AddHours(8),
+        LatestDeparture = DateTime.Today.AddHours(10)
     };
 
-    private TripForecastResult? _result;
+    private List<RankedTripResult>? _results;
+    private int _expandedRank = 1;
     private bool _isLoading;
     private string? _errorMessage;
 
     private async Task HandleSubmit()
     {
+        if (_request.LatestDeparture < _request.EarliestDeparture)
+        {
+            _errorMessage = "Latest departure must be at or after earliest departure.";
+            return;
+        }
+
         _isLoading = true;
         _errorMessage = null;
-        _result = null;
+        _results = null;
         StateHasChanged();
 
         try
         {
-            _result = await TripForecastService.GetTripForecast(_request);
-            var a = 0;
+            _results = await TripForecastService.GetTripForecast(_request);
+            _expandedRank = 1;
         }
         catch (Exception ex)
         {
@@ -639,6 +850,11 @@
         }
     }
 
+    private void ToggleAccordion(int rank)
+    {
+        _expandedRank = _expandedRank == rank ? 0 : rank;
+    }
+
     private static string FormatDuration(double totalSeconds)
     {
         var ts = TimeSpan.FromSeconds(totalSeconds);
@@ -646,18 +862,18 @@
             ? $"{ts.Hours}h {ts.Minutes}m"
             : $"{ts.Minutes}m";
     }
-    
+
     private static string GetTempColor(int tempF) => tempF switch
     {
-        < 20 => "#93c5fd",   // deep blue
-        < 32 => "#bfdbfe",   // light blue
-        < 45 => "#dbeafe",   // very light blue
-        < 60 => "#e0f2fe",   // near white-blue
-        < 70 => "#f0fdf4",   // near white
-        < 80 => "#fef9c3",   // near white-yellow
-        < 90 => "#fed7aa",   // light orange
-        < 100 => "#fca5a5",  // light red
-        _ => "#f87171"       // deep red
+        < 20 => "#93c5fd",
+        < 32 => "#bfdbfe",
+        < 45 => "#dbeafe",
+        < 60 => "#e0f2fe",
+        < 70 => "#f0fdf4",
+        < 80 => "#fef9c3",
+        < 90 => "#fed7aa",
+        < 100 => "#fca5a5",
+        _ => "#f87171"
     };
 
     private static string GetWeatherIcon(WeatherCondition condition) => condition switch
